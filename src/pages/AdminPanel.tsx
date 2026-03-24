@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import type { Room } from "@/lib/types";
 import { isDeviceOnline } from "@/lib/thresholds";
 import { useLatestReadings } from "@/hooks/use-icu-data";

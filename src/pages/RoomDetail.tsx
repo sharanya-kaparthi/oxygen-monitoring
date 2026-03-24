@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { useRoomReadings, useAlerts } from "@/hooks/use-icu-data";
 import type { Room, Note } from "@/lib/types";
 import {
