@@ -14,7 +14,182 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alerts: {
+        Row: {
+          acknowledged: boolean
+          acknowledged_at: string | null
+          created_at: string
+          id: string
+          message: string
+          room_id: string
+          severity: string
+          type: string
+        }
+        Insert: {
+          acknowledged?: boolean
+          acknowledged_at?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          room_id: string
+          severity: string
+          type: string
+        }
+        Update: {
+          acknowledged?: boolean
+          acknowledged_at?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          room_id?: string
+          severity?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alerts_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cylinder_history: {
+        Row: {
+          expiry_date: string
+          id: string
+          notes: string | null
+          replaced_at: string
+          room_id: string
+        }
+        Insert: {
+          expiry_date: string
+          id?: string
+          notes?: string | null
+          replaced_at?: string
+          room_id: string
+        }
+        Update: {
+          expiry_date?: string
+          id?: string
+          notes?: string | null
+          replaced_at?: string
+          room_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cylinder_history_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notes: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          room_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          room_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          room_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notes_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rooms: {
+        Row: {
+          created_at: string
+          cylinder_expiry_date: string | null
+          device_id: string
+          id: string
+          location: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          cylinder_expiry_date?: string | null
+          device_id: string
+          id?: string
+          location: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          cylinder_expiry_date?: string | null
+          device_id?: string
+          id?: string
+          location?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      sensor_readings: {
+        Row: {
+          created_at: string
+          cylinder_weight: number | null
+          humidity: number | null
+          id: string
+          o2_concentration: number | null
+          pressure: number | null
+          room_id: string
+          spo2: number | null
+          temperature: number | null
+          timestamp: string
+        }
+        Insert: {
+          created_at?: string
+          cylinder_weight?: number | null
+          humidity?: number | null
+          id?: string
+          o2_concentration?: number | null
+          pressure?: number | null
+          room_id: string
+          spo2?: number | null
+          temperature?: number | null
+          timestamp: string
+        }
+        Update: {
+          created_at?: string
+          cylinder_weight?: number | null
+          humidity?: number | null
+          id?: string
+          o2_concentration?: number | null
+          pressure?: number | null
+          room_id?: string
+          spo2?: number | null
+          temperature?: number | null
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sensor_readings_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
