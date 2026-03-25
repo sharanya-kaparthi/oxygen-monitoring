@@ -157,6 +157,17 @@ export default function MaintenanceDashboard() {
                         {online ? "Connected" : "Offline"}
                       </span>
                     </td>
+                    <td className="py-3 pr-4">
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        fireStatus === "critical"
+                          ? "bg-status-critical/10 text-status-critical"
+                          : fireStatus === "warning"
+                          ? "bg-status-warning/10 text-status-warning"
+                          : "bg-status-normal/10 text-status-normal"
+                      }`}>
+                        {fireStatus === "normal" ? "Normal" : fireStatus === "warning" ? "Warning" : "Critical"}
+                      </span>
+                    </td>
                     <td className="py-3">
                       {editingExpiry === room.id ? (
                         <div className="flex items-center gap-2">
