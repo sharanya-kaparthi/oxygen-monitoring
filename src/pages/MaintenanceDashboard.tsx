@@ -113,6 +113,7 @@ export default function MaintenanceDashboard() {
                 <SortHeader label="Pressure (hPa)" k="pressure" />
                 <SortHeader label="Expiry Date" k="expiry" />
                 <SortHeader label="Device" k="status" />
+                <th className="pb-3 pr-4 text-left font-medium text-muted-foreground">Fire Risk</th>
                 <th className="pb-3 text-left font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
