@@ -73,7 +73,3 @@ export function getDaysUntilExpiry(expiryDate: string | null): number | null {
   const diff = new Date(expiryDate).getTime() - Date.now();
   return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
-  if (!expiryDate) return null;
-  const diff = new Date(expiryDate).getTime() - Date.now();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
-}
