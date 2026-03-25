@@ -4,7 +4,7 @@ import { useRoomsWithReadings } from "@/hooks/use-icu-data";
 import type { CylinderHistory } from "@/lib/types";
 import {
   getCylinderWeightStatus, getExpiryStatus, isDeviceOnline,
-  getStatusColor, getDaysUntilExpiry,
+  getStatusColor, getDaysUntilExpiry, getFireHazardStatus,
 } from "@/lib/thresholds";
 import { ArrowUpDown, X } from "lucide-react";
 
