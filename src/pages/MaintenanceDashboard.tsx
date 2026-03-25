@@ -124,6 +124,10 @@ export default function MaintenanceDashboard() {
                 const daysUntil = getDaysUntilExpiry(room.cylinder_expiry_date);
                 const weightStatus = r?.cylinder_weight != null ? getCylinderWeightStatus(r.cylinder_weight) : null;
                 const expiryStatus = daysUntil != null ? getExpiryStatus(daysUntil) : null;
+                const fireStatus = getFireHazardStatus(
+                  r?.o2_concentration != null ? Number(r.o2_concentration) : null,
+                  r?.humidity != null ? Number(r.humidity) : null
+                );
 
                 return (
                   <tr key={room.id} className="border-b border-border/50">
