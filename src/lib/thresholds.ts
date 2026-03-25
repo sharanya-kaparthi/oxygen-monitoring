@@ -58,6 +58,16 @@ export function getCardBorderColor(hasCritical: boolean, hasWarning: boolean): s
   return "border-border";
 }
 
+export function getFireHazardStatus(o2Concentration: number | null, humidity: number | null): StatusLevel {
+  if (o2Concentration == null || humidity == null) return "normal";
+  if (o2Concentration <= 23.5 || humidity < 60) return "normal";
+  // > 25% O2 OR (23.5-25% O2 with > 75% humidity) → critical
+  if (o2Concentration > 25) return "critical";
+  // 23.5-25% O2 range
+  if (humidity > 75) return "critical";
+  return "warning"; // 23.5-25% O2, 60-75% humidity
+}
+
 export function getDaysUntilExpiry(expiryDate: string | null): number | null {
   if (!expiryDate) return null;
   const diff = new Date(expiryDate).getTime() - Date.now();

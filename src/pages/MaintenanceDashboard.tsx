@@ -4,7 +4,7 @@ import { useRoomsWithReadings } from "@/hooks/use-icu-data";
 import type { CylinderHistory } from "@/lib/types";
 import {
   getCylinderWeightStatus, getExpiryStatus, isDeviceOnline,
-  getStatusColor, getDaysUntilExpiry,
+  getStatusColor, getDaysUntilExpiry, getFireHazardStatus,
 } from "@/lib/thresholds";
 import { ArrowUpDown, X } from "lucide-react";
 
@@ -113,6 +113,7 @@ export default function MaintenanceDashboard() {
                 <SortHeader label="Pressure (hPa)" k="pressure" />
                 <SortHeader label="Expiry Date" k="expiry" />
                 <SortHeader label="Device" k="status" />
+                <th className="pb-3 pr-4 text-left font-medium text-muted-foreground">Fire Risk</th>
                 <th className="pb-3 text-left font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
@@ -123,6 +124,10 @@ export default function MaintenanceDashboard() {
                 const daysUntil = getDaysUntilExpiry(room.cylinder_expiry_date);
                 const weightStatus = r?.cylinder_weight != null ? getCylinderWeightStatus(r.cylinder_weight) : null;
                 const expiryStatus = daysUntil != null ? getExpiryStatus(daysUntil) : null;
+                const fireStatus = getFireHazardStatus(
+                  r?.o2_concentration != null ? Number(r.o2_concentration) : null,
+                  r?.humidity != null ? Number(r.humidity) : null
+                );
 
                 return (
                   <tr key={room.id} className="border-b border-border/50">
@@ -150,6 +155,17 @@ export default function MaintenanceDashboard() {
                       }`}>
                         <span className={online ? "status-dot-online" : "status-dot-offline"} />
                         {online ? "Connected" : "Offline"}
+                      </span>
+                    </td>
+                    <td className="py-3 pr-4">
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        fireStatus === "critical"
+                          ? "bg-status-critical/10 text-status-critical"
+                          : fireStatus === "warning"
+                          ? "bg-status-warning/10 text-status-warning"
+                          : "bg-status-normal/10 text-status-normal"
+                      }`}>
+                        {fireStatus === "normal" ? "Normal" : fireStatus === "warning" ? "Warning" : "Critical"}
                       </span>
                     </td>
                     <td className="py-3">
