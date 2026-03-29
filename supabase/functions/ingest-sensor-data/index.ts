@@ -177,16 +177,23 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Cylinder weight alerts
+      // Cylinder weight alerts (1kg baseline)
       if (weight != null) {
-        if (weight < 500) {
+        if (weight < 100) {
+          if (!hasActiveAlert(roomId, "cylinder_empty"))
+            alertsToCreate.push({ room_id: roomId, type: "cylinder_empty", severity: "critical", message: `Emergency: Cylinder empty at ${weight}g` });
+          alertTypesToResolve.push({ roomId, type: "low_weight" });
+        } else if (weight >= 100 && weight <= 299) {
           if (!hasActiveAlert(roomId, "low_weight"))
-            alertsToCreate.push({ room_id: roomId, type: "low_weight", severity: "critical", message: `Critical: Cylinder nearly empty at ${weight}g` });
-        } else if (weight >= 500 && weight <= 1500) {
+            alertsToCreate.push({ room_id: roomId, type: "low_weight", severity: "critical", message: `Critical: Cylinder at ${weight}g - replace soon` });
+          alertTypesToResolve.push({ roomId, type: "cylinder_empty" });
+        } else if (weight >= 300 && weight <= 799) {
           if (!hasActiveAlert(roomId, "low_weight"))
             alertsToCreate.push({ room_id: roomId, type: "low_weight", severity: "warning", message: `Low cylinder supply: ${weight}g remaining` });
+          alertTypesToResolve.push({ roomId, type: "cylinder_empty" });
         } else {
           alertTypesToResolve.push({ roomId, type: "low_weight" });
+          alertTypesToResolve.push({ roomId, type: "cylinder_empty" });
         }
       }
 
