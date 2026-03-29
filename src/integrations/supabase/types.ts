@@ -195,7 +195,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_abnormal_consumption: { Args: never; Returns: undefined }
+      check_device_offline: { Args: never; Returns: undefined }
+      check_trending_alerts: { Args: never; Returns: undefined }
+      check_valve_closed: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
