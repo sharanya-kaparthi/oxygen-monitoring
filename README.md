@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+IDP GROUP - 9
 
-TODO: Document your project here
+oxygen leakage alert system targeting hospitals and clinics with inadequate funds
