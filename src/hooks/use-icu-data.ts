@@ -132,7 +132,7 @@ export function useRoomReadings(roomId: string) {
     fetch();
 
     const channel = supabase
-      .channel(`room_readings_${roomId}`)
+      .channel(uniqueChannel(`room_readings_${roomId}`))
       .on(
         "postgres_changes",
         {
