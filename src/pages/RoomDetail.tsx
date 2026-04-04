@@ -11,26 +11,36 @@ import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "rec
 import { ArrowLeft } from "lucide-react";
 
 function SensorChart({ data, dataKey, label, color }: { data: any[]; dataKey: string; label: string; color: string }) {
+  const pointsWithValue = data.filter((d) => d[dataKey] != null);
+
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</h4>
-      <ResponsiveContainer width="100%" height={160}>
-        <LineChart data={data}>
-          <XAxis
-            dataKey="timestamp"
-            tickFormatter={(v) => new Date(v).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-            tick={{ fontSize: 10, fill: "hsl(215,10%,50%)" }}
-            axisLine={false}
-            tickLine={false}
-          />
-          <YAxis tick={{ fontSize: 10, fill: "hsl(215,10%,50%)" }} axisLine={false} tickLine={false} width={40} />
-          <Tooltip
-            labelFormatter={(v) => new Date(v).toLocaleString()}
-            contentStyle={{ fontSize: 12, border: "1px solid hsl(214,20%,90%)", borderRadius: 8 }}
-          />
-          <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={2} dot={false} />
-        </LineChart>
-      </ResponsiveContainer>
+      {pointsWithValue.length < 2 ? (
+        <div className="flex h-[160px] items-center justify-center text-sm text-muted-foreground">
+          {pointsWithValue.length === 0
+            ? "No data yet — waiting for sensor readings"
+            : `Not enough data yet (${pointsWithValue.length} reading). Need at least 2 to render chart.`}
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height={160}>
+          <LineChart data={data}>
+            <XAxis
+              dataKey="timestamp"
+              tickFormatter={(v) => new Date(v).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              tick={{ fontSize: 10, fill: "hsl(215,10%,50%)" }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <YAxis tick={{ fontSize: 10, fill: "hsl(215,10%,50%)" }} axisLine={false} tickLine={false} width={40} />
+            <Tooltip
+              labelFormatter={(v) => new Date(v).toLocaleString()}
+              contentStyle={{ fontSize: 12, border: "1px solid hsl(214,20%,90%)", borderRadius: 8 }}
+            />
+            <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={2} dot={pointsWithValue.length < 10} />
+          </LineChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 }
