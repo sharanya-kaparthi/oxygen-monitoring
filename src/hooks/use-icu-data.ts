@@ -89,8 +89,9 @@ export function useAlerts(acknowledged?: boolean) {
 
   // Realtime
   useEffect(() => {
+    const channelName = `alerts_realtime_${acknowledged === undefined ? "all" : acknowledged ? "acked" : "unacked"}`;
     const channel = supabase
-      .channel("alerts_realtime")
+      .channel(channelName)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "alerts" },
