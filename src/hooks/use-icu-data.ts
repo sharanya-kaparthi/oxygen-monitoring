@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Room, SensorReading, Alert, RoomWithLatestReading } from "@/lib/types";
+
+let channelCounter = 0;
+function uniqueChannel(prefix: string) {
+  return `${prefix}_${++channelCounter}_${Date.now()}`;
+}
 
 export function useRooms() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -49,7 +54,7 @@ export function useLatestReadings(roomIds: string[]) {
   // Subscribe to realtime updates
   useEffect(() => {
     const channel = supabase
-      .channel("sensor_readings_realtime")
+      .channel(uniqueChannel("sensor_readings"))
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "sensor_readings" },
@@ -90,7 +95,7 @@ export function useAlerts(acknowledged?: boolean) {
   // Realtime
   useEffect(() => {
     const channel = supabase
-      .channel("alerts_realtime")
+      .channel(uniqueChannel("alerts"))
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "alerts" },
@@ -127,7 +132,7 @@ export function useRoomReadings(roomId: string) {
     fetch();
 
     const channel = supabase
-      .channel(`room_readings_${roomId}`)
+      .channel(uniqueChannel(`room_readings_${roomId}`))
       .on(
         "postgres_changes",
         {
