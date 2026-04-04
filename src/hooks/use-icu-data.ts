@@ -54,7 +54,7 @@ export function useLatestReadings(roomIds: string[]) {
   // Subscribe to realtime updates
   useEffect(() => {
     const channel = supabase
-      .channel("sensor_readings_realtime")
+      .channel(uniqueChannel("sensor_readings"))
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "sensor_readings" },
