@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Room, SensorReading, Alert, RoomWithLatestReading } from "@/lib/types";
+
+let channelCounter = 0;
+function uniqueChannel(prefix: string) {
+  return `${prefix}_${++channelCounter}_${Date.now()}`;
+}
 
 export function useRooms() {
   const [rooms, setRooms] = useState<Room[]>([]);
