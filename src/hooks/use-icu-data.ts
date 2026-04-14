@@ -182,8 +182,3 @@ export async function deleteAlert(alertId: string) {
 export async function clearAlertHistory() {
   await supabase.from("alerts").delete().eq("acknowledged", true);
 }
-  await supabase
-    .from("alerts")
-    .update({ acknowledged: true, acknowledged_at: new Date().toISOString() })
-    .eq("id", alertId);
-}
