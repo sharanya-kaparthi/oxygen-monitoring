@@ -1,13 +1,23 @@
 import { useState } from "react";
-import { useAlerts } from "@/hooks/use-icu-data";
+import { useAlerts, deleteAlert, clearAlertHistory } from "@/hooks/use-icu-data";
 import { useRooms } from "@/hooks/use-icu-data";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 
 export default function AlertHistory() {
   const [open, setOpen] = useState(false);
-  const { alerts } = useAlerts();
+  const { alerts, refetch } = useAlerts();
   const { rooms } = useRooms();
   const roomMap = Object.fromEntries(rooms.map((r) => [r.id, r.name]));
+
+  const handleDelete = async (id: string) => {
+    await deleteAlert(id);
+    refetch();
+  };
+
+  const handleClearAll = async () => {
+    await clearAlertHistory();
+    refetch();
+  };
 
   return (
     <div className="border-t border-border bg-card">
@@ -20,6 +30,16 @@ export default function AlertHistory() {
       </button>
       {open && (
         <div className="max-h-64 overflow-auto px-6 pb-4">
+          {alerts.length > 0 && (
+            <div className="mb-2 flex justify-end">
+              <button
+                onClick={handleClearAll}
+                className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+              >
+                <Trash2 className="h-3 w-3" /> Clear Acknowledged
+              </button>
+            </div>
+          )}
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border text-left">
@@ -27,7 +47,8 @@ export default function AlertHistory() {
                 <th className="pb-2 pr-4 font-medium text-muted-foreground">Room</th>
                 <th className="pb-2 pr-4 font-medium text-muted-foreground">Type</th>
                 <th className="pb-2 pr-4 font-medium text-muted-foreground">Severity</th>
-                <th className="pb-2 font-medium text-muted-foreground">Status</th>
+                <th className="pb-2 pr-4 font-medium text-muted-foreground">Status</th>
+                <th className="pb-2 font-medium text-muted-foreground"></th>
               </tr>
             </thead>
             <tbody>
@@ -43,11 +64,20 @@ export default function AlertHistory() {
                       {a.severity}
                     </span>
                   </td>
-                  <td className="py-2">{a.acknowledged ? "Acknowledged" : "Active"}</td>
+                  <td className="py-2 pr-4">{a.acknowledged ? "Acknowledged" : "Active"}</td>
+                  <td className="py-2">
+                    <button
+                      onClick={() => handleDelete(a.id)}
+                      className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                      title="Remove alert"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </td>
                 </tr>
               ))}
               {alerts.length === 0 && (
-                <tr><td colSpan={5} className="py-4 text-center text-muted-foreground">No alerts</td></tr>
+                <tr><td colSpan={6} className="py-4 text-center text-muted-foreground">No alerts</td></tr>
               )}
             </tbody>
           </table>
