@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useAlerts } from "@/hooks/use-icu-data";
+import { useAlerts, deleteAlert, clearAlertHistory } from "@/hooks/use-icu-data";
 import { useRooms } from "@/hooks/use-icu-data";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 
 export default function AlertHistory() {
   const [open, setOpen] = useState(false);

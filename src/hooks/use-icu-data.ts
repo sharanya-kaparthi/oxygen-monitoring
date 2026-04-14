@@ -174,3 +174,16 @@ export async function acknowledgeAlert(alertId: string) {
     .update({ acknowledged: true, acknowledged_at: new Date().toISOString() })
     .eq("id", alertId);
 }
+
+export async function deleteAlert(alertId: string) {
+  await supabase.from("alerts").delete().eq("id", alertId);
+}
+
+export async function clearAlertHistory() {
+  await supabase.from("alerts").delete().eq("acknowledged", true);
+}
+  await supabase
+    .from("alerts")
+    .update({ acknowledged: true, acknowledged_at: new Date().toISOString() })
+    .eq("id", alertId);
+}
