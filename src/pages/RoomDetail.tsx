@@ -1,14 +1,14 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useRoomReadings, useAlerts } from "@/hooks/use-icu-data";
+import { useRoomReadings, useAlerts, deleteAlert, clearAlertHistory } from "@/hooks/use-icu-data";
 import type { Room, Note } from "@/lib/types";
 import {
   getSpo2Status, getO2ConcentrationStatus, getCylinderWeightStatus,
   getTemperatureStatus, getExpiryStatus, isDeviceOnline, getStatusColor, getDaysUntilExpiry,
 } from "@/lib/thresholds";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X, Trash2 } from "lucide-react";
 
 function SensorChart({ data, dataKey, label, color }: { data: any[]; dataKey: string; label: string; color: string }) {
   const pointsWithValue = data.filter((d) => d[dataKey] != null);
@@ -51,8 +51,19 @@ export default function RoomDetail() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState("");
   const { readings } = useRoomReadings(id!);
-  const { alerts } = useAlerts();
+  const { alerts, refetch: refetchAlerts } = useAlerts();
   const roomAlerts = alerts.filter((a) => a.room_id === id);
+
+  const handleDeleteAlert = async (alertId: string) => {
+    await deleteAlert(alertId);
+    refetchAlerts();
+  };
+
+  const handleClearAcknowledged = async () => {
+    const acked = roomAlerts.filter((a) => a.acknowledged);
+    await Promise.all(acked.map((a) => deleteAlert(a.id)));
+    refetchAlerts();
+  };
 
   useEffect(() => {
     supabase.from("rooms").select("*").eq("id", id).single().then(({ data }) => {
@@ -140,14 +151,33 @@ export default function RoomDetail() {
       {/* Room alerts */}
       {roomAlerts.length > 0 && (
         <div className="mb-6">
-          <h3 className="mb-2 text-sm font-semibold text-foreground">Recent Alerts</h3>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground">Recent Alerts</h3>
+            {roomAlerts.some((a) => a.acknowledged) && (
+              <button
+                onClick={handleClearAcknowledged}
+                className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+              >
+                <Trash2 className="h-3 w-3" /> Clear Acknowledged
+              </button>
+            )}
+          </div>
           <div className="space-y-1">
             {roomAlerts.slice(0, 10).map((a) => (
-              <div key={a.id} className={`rounded-lg px-3 py-2 text-sm ${
+              <div key={a.id} className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm ${
                 a.severity === "critical" ? "bg-status-critical/10 text-status-critical" : "bg-status-warning/10 text-status-warning"
               }`}>
-                {a.message} — {new Date(a.created_at).toLocaleString()}
-                {a.acknowledged && <span className="ml-2 text-muted-foreground">(Acknowledged)</span>}
+                <span>
+                  {a.message} — {new Date(a.created_at).toLocaleString()}
+                  {a.acknowledged && <span className="ml-2 text-muted-foreground">(Acknowledged)</span>}
+                </span>
+                <button
+                  onClick={() => handleDeleteAlert(a.id)}
+                  className="ml-2 shrink-0 rounded p-0.5 opacity-60 hover:opacity-100 hover:bg-background/50 transition-all"
+                  title="Remove alert"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
               </div>
             ))}
           </div>
