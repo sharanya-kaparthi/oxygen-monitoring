@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useRoomReadings, useAlerts } from "@/hooks/use-icu-data";
+import { useRoomReadings, useAlerts, deleteAlert, clearAlertHistory } from "@/hooks/use-icu-data";
 import type { Room, Note } from "@/lib/types";
 import {
   getSpo2Status, getO2ConcentrationStatus, getCylinderWeightStatus,
